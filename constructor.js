@@ -92,8 +92,14 @@ class Contenedor {
     const contenido = fs.readFileSync(this.archivo, "utf-8");
     const dataParseada = JSON.parse(contenido);
     let carrito = dataParseada.find((objeto) => objeto.id == id);
-    let productos = carrito.productos.filter((objeto) => objeto.id != idProducto);
-    carrito.productos = productos;
+    carrito.productos = carrito.productos.filter((objeto) => objeto.id != idProducto);
+    /**
+ no es necesario guardar en una variable para volver a asignar, recorda que estos datos se guardan por referencia.
+ con aplicar el filter ya es suficiente.
+ carrito.productos.filter((objeto) => objeto.id != idProducto);
+ */
+    /////////////////////////////RESPUESTA/////////////////////////////////
+    //Filter no modifica el array (lo probe): https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/filter
     fs.writeFileSync(this.archivo, JSON.stringify(dataParseada, null, 2));
     return mensaje;
   }

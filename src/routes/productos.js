@@ -31,10 +31,8 @@ router.post("/", (req, res) => {
       constructor.save(data);
       res.status(200).send("Producto agregado");
     }
-  } else {
-    res.status(401).send("No autorizado");
   }
-catch (err) {
+  catch (err) {
     res.status(401).send("No autorizado");
   }
 });
@@ -46,6 +44,8 @@ router.put("/:id", (req, res) => {
       const prodNuevo = req.body;
       const idInt = parseInt(id);
       res.send(constructor.updateById(idInt, prodNuevo))
+    } else {
+      res.status(401).send("No autorizado");
     }
   } catch (err) {
     res.status(401).send("No autorizado");
