@@ -8,7 +8,7 @@ const createCarrito = async (req, res) => {
         res.status(200).send("Carrito creado con el id: " +
             constructor.saveCarrito(data));
     } catch (err) {
-        res.status(401).send(err);
+        res.status(401).send(err.message);
     }
 }
 
@@ -18,7 +18,7 @@ const deleteProdIdInCarritoID = async (req, res) => {
         constructor.deleteProduct(id, idProducto);
         res.send("Se elimino el producto con el id: " + idProducto);
     } catch (err) {
-        res.status(401).send(err);
+        res.status(401).send(err.message);
     }
 }
 
@@ -28,7 +28,7 @@ const deleteCartById = async (req, res) => {
         constructor.deleteById(parseInt(id));
         res.send("Se elimino el carrito con el id: " + id);
     } catch (err) {
-        res.status(401).send(err);
+        res.status(401).send(err.message);
     }
 }
 
@@ -38,7 +38,7 @@ const getCarrito = async (req, res) => {
         const data = constructor.getById(parseInt(id));
         res.send(data.productos);
     } catch (err) {
-        res.status(401).send(err);
+        res.status(401).send(err.message);
     }
 }
 
@@ -50,7 +50,7 @@ const addProdToCart = async (req, res) => {
         constructor.saveInCarrito(id, productoAgr);
         res.send("Se agrego el producto con el id: " + producto.id);
     } catch (err) {
-        res.status(400).send(err);
+        res.status(400).send(err.message);
     }
 }
 

@@ -32,6 +32,9 @@ class Contenedor {
     const data = fs.readFileSync(this.archivo, "utf-8");
     const dataParseada = JSON.parse(data);
     const objeto = dataParseada.find((objeto) => objeto.id === id);
+    if (objeto === undefined) {
+      throw new Error("No se pudo encontrar el id: " + id)
+    }
     return objeto;
   }
 
@@ -45,6 +48,9 @@ class Contenedor {
     const data = fs.readFileSync(this.archivo, "utf-8");
     const dataParseada = JSON.parse(data);
     const dataFiltrada = dataParseada.filter((objeto) => objeto.id !== id);
+    if (dataParseada.length === dataFiltrada.length) {
+      throw new Error("No se pudo encontrar el id: " + id)
+    }
     const dataString = JSON.stringify(dataFiltrada);
     fs.writeFileSync(this.archivo, dataString);
     return dataFiltrada;
@@ -68,7 +74,7 @@ class Contenedor {
     let productoViejo = dataParseada.find((objeto) => objeto.id === id);
     let mensaje = "Se reemplazo el producto";
     if (productoViejo === undefined) {
-      throw { msg: "404 Not found" };
+      throw new Error("No se pudo encontrar el producto: " + id);
     }
     let productosFiltrados = dataParseada.filter((objeto) => objeto.id !== id);
     productoViejo = { id, ...objetoNuevo };
@@ -81,7 +87,10 @@ class Contenedor {
     const mensaje = "Se agrego el producto al carrito";
     const contenido = fs.readFileSync(this.archivo, "utf-8");
     const dataParseada = JSON.parse(contenido);
-    let carrito = dataParseada.find((objeto) => objeto.id == id);
+    const carrito = dataParseada.find((objeto) => objeto.id == id);
+    if (carrito === undefined) {
+      throw new Error("No se pudo encontrar el carrito: " + id);
+    }
     carrito.productos.push(objetoAdd);
     fs.writeFileSync(this.archivo, JSON.stringify(dataParseada, null, 2));
     return mensaje;
@@ -92,16 +101,23 @@ class Contenedor {
     const contenido = fs.readFileSync(this.archivo, "utf-8");
     const dataParseada = JSON.parse(contenido);
     let carrito = dataParseada.find((objeto) => objeto.id == id);
-    carrito.productos = carrito.productos.filter((objeto) => objeto.id != idProducto);
+    if (carrito === undefined) {
+      throw new Error("No se pudo encontrar el carrito: " + id);
+    }
+    const productosFiltrados = carrito.productos.filter((objeto) => objeto.id != idProducto);
+    if (carrito.productos.length === productosFiltrados.length) {
+      throw new Error("No se pudo encontrar el producto: " + idProducto);
+    }
+    carrito.productos = productosFiltrados
+    fs.writeFileSync(this.archivo, JSON.stringify(dataParseada, null, 2));
+    return mensaje;
     /**
  no es necesario guardar en una variable para volver a asignar, recorda que estos datos se guardan por referencia.
  con aplicar el filter ya es suficiente.
  carrito.productos.filter((objeto) => objeto.id != idProducto);
  */
     /////////////////////////////RESPUESTA/////////////////////////////////
-    //Filter no modifica el array (lo probe): https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/filter
-    fs.writeFileSync(this.archivo, JSON.stringify(dataParseada, null, 2));
-    return mensaje;
+    //Filter no modifica el array  original por lo que hay que reasignarlo (lo probe y tambien lo busque en developer mozilla): https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/filter
   }
 
 };
