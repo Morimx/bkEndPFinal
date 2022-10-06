@@ -1,7 +1,7 @@
 const express = require("express");
 const handlebars = require("express-handlebars");
 const app = express();
-const fs = require("fs");
+// const fs = require("fs"); No se utiliza en este archivo
 const Contenedor = require("./constructor");
 const constructor = new Contenedor("./data/productos.json");
 const productosRouter = require("./src/routes/productos");
@@ -9,7 +9,6 @@ const carritoRouter = require("./src/routes/carrito");
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(express.static("views"));
-
 
 
 /////////////////////////
@@ -43,39 +42,23 @@ app.get("/", (req, res) => {
 /////////////////////////
 // EXPRESS ROUTER ///////
 /////////////////////////
-
-
 app.use("/api/productos", productosRouter);
 app.use("/api/carrito", carritoRouter);
-
+/**
+ Si queres hacer dinamico el login, podes crear un router para eso => app.use("/signin", authRoutes);
+ y en authRoutes vas a tener las respectivas funciones (que traes desde el controller)
+ Podes hacer => post("/signin", signin)
+ En la funcion singin deberias buscar por email en el json de usuarios (creo que lo haces con tu metodo get() en usuarioController.js).
+ si existe el usuario con ese email, validar que la password guardada coincida con la recibida (Ya depende de vos si qrs que diferencie entre letras mayusculas
+ y minusculas). Si existe, y las pass coinciden, cambias el valor isLogged= true, sino el correspondiente error. 
+ Dsp haces un middleware que valide si en el header isLogged=true.
+ Con eso y el middleware que hiciste que verifica si es admin, queda listo.
+ Despues vamos a ver como trabajar el login aplicando token.
+ */
 
 /////////////////////////
 // SERVER ON ////////////
 /////////////////////////
-app.listen(3000, () => {
+app.listen(3003, () => {
   console.log("Server ON");
 });
-
-
-/**
-Cuando hagas estas modificaciones vas a tener que cambiar un poco la estructura.
-Por ej:
-Los con
-troller se utilizan para modularizar, en esa carpeta irian las funciones que tenemos en el router, es decir,
-  lo que ahora trabajos en un mismo archivo => router.put("/:id", (req, res) => {... })
-  quedaria separado, por ej en routes/productos.js:
-
-  const updateProduct = require(la ruta al archivo correspondiente dentro de controller)
-  router.put("/:id", updateProduct )
-  (recordar siempre exportar el router)
-
-  y en controller, podemos tener el archivo productController.js y dentro tendria las funciones exportadas.
-  por ej:
-  const updateProduct= async (req, res) => {...}
-  
-  module.exports={ updateProduct }
-
-
-  Entonces, en routes/productos.js aplicando el middleware te quedaria
-  => router.put("/:id", nombreDelMiddleware, updateProduct )
- */
